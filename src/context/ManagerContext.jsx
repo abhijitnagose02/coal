@@ -1,0 +1,383 @@
+import React, { createContext, useContext, useState } from 'react';
+
+const ManagerContext = createContext();
+
+export const useManager = () => useContext(ManagerContext);
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+
+const initialMineDetails = {
+  name: "Kamptee Colliery",
+  subsidiary: "WCL - Western Coalfields Limited",
+  type: "Underground",
+  location: "Nagpur, Maharashtra",
+  manager: { name: "Amit Sharma", designation: "Mine Manager" },
+  complianceScore: 87,
+  riskLevel: "Medium",
+  lastInspection: "2026-09-08",
+  shifts: { current: "Morning Shift (06:00–14:00)", totalWorkers: 342 }
+};
+
+const initialKpis = {
+  complianceScore: 87,
+  openActions: 12,
+  overdueActions: 3,
+  pendingInspections: 4,
+  activeIncidents: 2,
+  workforcePresent: 289,
+  safetyScore: 91,
+  riskIndex: 34,
+  aiAlertsToday: 5
+};
+
+const initialAttentionItems = [
+  {
+    id: "ATT-1",
+    type: "Risk Escalation",
+    severity: "Critical",
+    title: "Ventilation failure in Sector 4",
+    description: "Methane levels approaching statutory threshold in underground Sector 4 due to ventilation duct damage.",
+    timestamp: "2026-09-09T08:14:00Z",
+    aiGenerated: true,
+    actionRequired: true
+  },
+  {
+    id: "ATT-2",
+    type: "Deadline Breach",
+    severity: "High",
+    title: "Corrective Action ACT-332 Overdue",
+    description: "Repair of damaged ventilation duct was due 2026-09-06. Assigned to Prakash Verma.",
+    timestamp: "2026-09-08T18:30:00Z",
+    aiGenerated: false,
+    actionRequired: true
+  },
+  {
+    id: "ATT-3",
+    type: "AI Insight",
+    severity: "Medium",
+    title: "Recurring dust suppression delays",
+    description: "Pattern detected: Dust suppression system activations delayed by avg. 22 minutes across last 7 shifts.",
+    timestamp: "2026-09-07T14:20:00Z",
+    aiGenerated: true,
+    actionRequired: false
+  }
+];
+
+const initialAiInsights = [
+  {
+    id: "AI-201",
+    riskCategory: "Safety",
+    riskLevel: "High",
+    finding: "Recurring compliance pattern detected: Roof support delays",
+    reason: "Previous 3 inspections (INS-1021, INS-1033, INS-1042) flagged identical observations in Sector 2. Corrective action ACT-290 remains unresolved.",
+    recommendedAction: "Mandatory structural audit and immediate supervisor escalation.",
+    confidenceScore: 92
+  },
+  {
+    id: "AI-202",
+    riskCategory: "Environmental",
+    riskLevel: "Medium",
+    finding: "Predictive alert: Elevated SPM (Suspended Particulate Matter)",
+    reason: "Current wind velocity combined with inactive sprinklers in Zone B strongly correlates with previous DGMS emission violations.",
+    recommendedAction: "Activate automated dust suppression protocols immediately.",
+    confidenceScore: 85
+  },
+  {
+    id: "AI-203",
+    riskCategory: "Workforce",
+    riskLevel: "Low",
+    finding: "Fatigue risk: Extended overtime pattern for 12 workers",
+    reason: "12 workers have exceeded 48-hour weekly limits in 3 of the last 4 weeks. Correlates with 18% higher incident probability.",
+    recommendedAction: "Redistribute shift allocations and enforce mandatory rest periods.",
+    confidenceScore: 78
+  }
+];
+
+const initialCorrectiveActions = [
+  {
+    id: "ACT-332",
+    observationId: "OBS-204",
+    title: "Repair damaged ventilation duct in Sector 4",
+    assignedTo: "Prakash Verma",
+    deadline: "2026-09-06",
+    status: "Overdue",
+    riskLevel: "High",
+    description: "Ventilation duct in Sector 4 underground zone has sustained physical damage causing reduced airflow."
+  },
+  {
+    id: "ACT-335",
+    observationId: "OBS-211",
+    title: "Install additional roof bolts at Panel 5",
+    assignedTo: "Suresh Patil",
+    deadline: "2026-09-12",
+    status: "In Progress",
+    riskLevel: "High",
+    description: "Roof bolt spacing exceeds statutory limits in Panel 5. Additional bolts required."
+  },
+  {
+    id: "ACT-338",
+    observationId: "OBS-215",
+    title: "Calibrate fixed gas monitors in Main Haulage",
+    assignedTo: "Amit Desai",
+    deadline: "2026-09-10",
+    status: "Pending Verification",
+    riskLevel: "Medium",
+    description: "Scheduled calibration of methane and CO sensors in main haulage roadway."
+  }
+];
+
+const initialWorkforceData = {
+  totalStrength: 342,
+  present: 289,
+  absent: 53,
+  onLeave: 18,
+  contractors: 47,
+  shifts: [
+    { name: "Morning (06:00–14:00)", workers: 145, status: "Active" },
+    { name: "Afternoon (14:00–22:00)", workers: 98, status: "Upcoming" },
+    { name: "Night (22:00–06:00)", workers: 46, status: "Completed" }
+  ],
+  departments: [
+    { name: "Mining Operations", count: 124 },
+    { name: "Safety & Compliance", count: 32 },
+    { name: "Maintenance", count: 45 },
+    { name: "Transport", count: 38 },
+    { name: "Administration", count: 22 },
+    { name: "Contractors", count: 47 }
+  ]
+};
+
+const initialIncidents = [
+  {
+    id: "INC-701",
+    title: "Minor roof fall in Panel 3",
+    severity: "High",
+    status: "Under Investigation",
+    reportedBy: "Vijay Shinde",
+    date: "2026-09-08",
+    location: "Panel 3, Underground",
+    injuries: 0,
+    description: "Small roof fall (~2m²) detected during shift change. Area cordoned off immediately."
+  },
+  {
+    id: "INC-702",
+    title: "Conveyor belt slippage at Surface Plant",
+    severity: "Medium",
+    status: "Resolved",
+    reportedBy: "Ramesh Tiwari",
+    date: "2026-09-07",
+    location: "Surface Processing Plant",
+    injuries: 0,
+    description: "Belt tracking issue caused 45-min stoppage. Realigned and operational."
+  }
+];
+
+const initialInspections = [
+  {
+    id: "INS-1042",
+    date: "2026-09-08",
+    inspector: "Anil Sharma",
+    type: "Safety Audit",
+    status: "Completed",
+    observationsCount: 4,
+    zone: "Underground Sector 2"
+  },
+  {
+    id: "INS-1043",
+    date: "2026-09-09",
+    inspector: "Vikram Singh",
+    type: "Environmental Check",
+    status: "In Progress",
+    observationsCount: 1,
+    zone: "Surface Plant"
+  },
+  {
+    id: "INS-1044",
+    date: "2026-09-11",
+    inspector: "Pending Assignment",
+    type: "Structural Stability",
+    status: "Scheduled",
+    observationsCount: 0,
+    zone: "Panel 5"
+  }
+];
+
+const initialComplianceHealth = {
+  overallScore: 87,
+  categories: [
+    { name: "Safety Equipment", score: 92, status: "Good" },
+    { name: "Ventilation Standards", score: 78, status: "Needs Attention" },
+    { name: "Fire Prevention", score: 95, status: "Excellent" },
+    { name: "Electrical Safety", score: 84, status: "Good" },
+    { name: "Roof Support", score: 71, status: "Critical" },
+    { name: "Dust Suppression", score: 80, status: "Needs Attention" }
+  ],
+  recentViolations: [
+    { id: "VIO-101", rule: "CMR 2017, Rule 106", description: "Inadequate roof bolt spacing in Panel 5", date: "2026-09-08", severity: "High" },
+    { id: "VIO-102", rule: "CMR 2017, Rule 183", description: "Dust suppression system delayed activation", date: "2026-09-07", severity: "Medium" }
+  ]
+};
+
+const initialRiskCategories = [
+  { name: "Structural", level: "High", score: 72, trend: "worsening" },
+  { name: "Gas & Ventilation", level: "High", score: 68, trend: "stable" },
+  { name: "Electrical", level: "Medium", score: 82, trend: "improving" },
+  { name: "Fire", level: "Low", score: 93, trend: "stable" },
+  { name: "Environmental", level: "Medium", score: 79, trend: "worsening" },
+  { name: "Workforce Safety", level: "Low", score: 88, trend: "improving" }
+];
+
+const initialContractors = [
+  {
+    id: "CON-01",
+    name: "L&T Mining Services",
+    workers: 28,
+    complianceScore: 76,
+    activeProjects: 3,
+    status: "Active",
+    licenceExpiry: "2027-03-15"
+  },
+  {
+    id: "CON-02",
+    name: "Thriveni Earthmovers",
+    workers: 19,
+    complianceScore: 91,
+    activeProjects: 2,
+    status: "Active",
+    licenceExpiry: "2026-12-01"
+  }
+];
+
+const initialApprovals = [
+  {
+    id: "APR-501",
+    type: "Leave Request",
+    requestedBy: "Suresh Patil",
+    date: "2026-09-10",
+    status: "Pending",
+    details: "Medical leave for 3 days (Sep 11-13)"
+  },
+  {
+    id: "APR-502",
+    type: "Equipment Request",
+    requestedBy: "Ramesh Tiwari",
+    date: "2026-09-09",
+    status: "Pending",
+    details: "Replacement of 4 methane sensors in District 2"
+  },
+  {
+    id: "APR-503",
+    type: "Overtime Authorization",
+    requestedBy: "Vijay Shinde",
+    date: "2026-09-09",
+    status: "Approved",
+    details: "Extended shift for Panel 3 roof fall cleanup"
+  }
+];
+
+const initialDocuments = [
+  { id: "DOC-01", name: "Mine Plan (Form-A)", status: "Valid", expiry: "2027-06-30", category: "Statutory" },
+  { id: "DOC-02", name: "Safety Management Plan", status: "Valid", expiry: "2026-12-31", category: "Safety" },
+  { id: "DOC-03", name: "Environmental Clearance", status: "Expiring Soon", expiry: "2026-10-15", category: "Environment" },
+  { id: "DOC-04", name: "DGMS Inspection Report", status: "Valid", expiry: "2027-03-31", category: "Regulatory" }
+];
+
+const initialAuditHistory = [
+  { id: "AUD-01", action: "Inspection INS-1042 completed", user: "Anil Sharma", timestamp: "2026-09-08T16:30:00Z", type: "Inspection" },
+  { id: "AUD-02", action: "Corrective Action ACT-335 status changed to In Progress", user: "Suresh Patil", timestamp: "2026-09-08T10:15:00Z", type: "Action" },
+  { id: "AUD-03", action: "Incident INC-701 reported", user: "Vijay Shinde", timestamp: "2026-09-08T09:45:00Z", type: "Incident" },
+  { id: "AUD-04", action: "AI Alert AI-201 acknowledged", user: "Amit Sharma", timestamp: "2026-09-07T17:00:00Z", type: "AI" }
+];
+
+const initialGisZones = [
+  { id: "Z-1", name: "Underground Sector 1", risk: "Low", workers: 32, status: "Normal" },
+  { id: "Z-2", name: "Underground Sector 2", risk: "High", workers: 28, status: "Alert" },
+  { id: "Z-3", name: "Underground Sector 3", risk: "Medium", workers: 18, status: "Normal" },
+  { id: "Z-4", name: "Underground Sector 4", risk: "Critical", workers: 0, status: "Evacuated" },
+  { id: "Z-5", name: "Surface Plant", risk: "Low", workers: 45, status: "Normal" },
+  { id: "Z-6", name: "Overburden Dump", risk: "Medium", workers: 12, status: "Normal" }
+];
+
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
+export const ManagerProvider = ({ children }) => {
+  const [mineDetails] = useState(initialMineDetails);
+  const [kpis] = useState(initialKpis);
+  const [attentionItems, setAttentionItems] = useState(initialAttentionItems);
+  const [aiInsights] = useState(initialAiInsights);
+  const [correctiveActions, setCorrectiveActions] = useState(initialCorrectiveActions);
+  const [workforceData] = useState(initialWorkforceData);
+  const [incidents] = useState(initialIncidents);
+  const [inspections] = useState(initialInspections);
+  const [complianceHealth] = useState(initialComplianceHealth);
+  const [riskCategories] = useState(initialRiskCategories);
+  const [contractors] = useState(initialContractors);
+  const [approvals, setApprovals] = useState(initialApprovals);
+  const [documents] = useState(initialDocuments);
+  const [auditHistory] = useState(initialAuditHistory);
+  const [gisZones] = useState(initialGisZones);
+
+  // Helper functions used by manager pages
+
+  const openAiExplanation = (insightId) => {
+    console.log('[ManagerContext] Open AI Explanation for:', insightId);
+    // In a real app this would open a modal/drawer with detailed AI reasoning
+  };
+
+  const openActionDetail = (actionId) => {
+    console.log('[ManagerContext] Open Action Detail for:', actionId);
+    // In a real app this would open a detail panel/drawer
+  };
+
+  const openSiteDrawer = (zoneId) => {
+    console.log('[ManagerContext] Open Site Drawer for zone:', zoneId);
+    // In a real app this would open a site/zone detail drawer
+  };
+
+  const approveRequest = (approvalId) => {
+    setApprovals(prev =>
+      prev.map(a =>
+        a.id === approvalId ? { ...a, status: 'Approved' } : a
+      )
+    );
+  };
+
+  const escalateAction = (itemId) => {
+    setAttentionItems(prev =>
+      prev.map(item =>
+        item.id === itemId ? { ...item, escalated: true } : item
+      )
+    );
+    console.log('[ManagerContext] Escalated action:', itemId);
+  };
+
+  const value = {
+    mineDetails,
+    kpis,
+    attentionItems,
+    aiInsights,
+    correctiveActions,
+    workforceData,
+    incidents,
+    inspections,
+    complianceHealth,
+    riskCategories,
+    contractors,
+    approvals,
+    documents,
+    auditHistory,
+    gisZones,
+    // Actions
+    openAiExplanation,
+    openActionDetail,
+    openSiteDrawer,
+    approveRequest,
+    escalateAction
+  };
+
+  return (
+    <ManagerContext.Provider value={value}>
+      {children}
+    </ManagerContext.Provider>
+  );
+};

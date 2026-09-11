@@ -12,6 +12,7 @@ import {
   Bell
 } from 'lucide-react';
 import { dashboardStats, aiInsights, alerts, correctiveActions } from '../../data/mockData';
+import { useLanguage } from '../../context/LanguageContext';
 
 // --- Reusable UI Components ---
 const StatCard = ({ title, value, icon: Icon, colorClass, subtitle }) => (
@@ -44,17 +45,19 @@ const RiskBadge = ({ level }) => {
 
 // --- Main Dashboard ---
 const MineManagerDashboard = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-2xl font-bold text-[#0f4c81]">Corporate Risk Dashboard</h1>
-          <p className="text-slate-500 text-sm mt-1">Cross-mine governance visibility and active alerts.</p>
+          <h1 className="text-2xl font-bold text-[#0f4c81]">{t('riskOverview') || 'Corporate Risk Dashboard'}</h1>
+          <p className="text-slate-500 text-sm mt-1">{t('overview') || 'Cross-mine governance visibility and active alerts.'}</p>
         </div>
         <div className="text-xs font-semibold text-slate-500 bg-white px-3 py-1.5 rounded-md border border-slate-200 shadow-sm">
-          Data simulated for SIH prototype
+          {t('prototypeMsg') || 'Data simulated for SIH prototype'}
         </div>
       </div>
 

@@ -8,10 +8,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useManager } from '../../context/ManagerContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { t } = useLanguage();
   const { 
     mineDetails, 
     kpis, 
@@ -48,12 +50,12 @@ const ManagerDashboard = () => {
       <div className="space-y-4">
         <div className="flex flex-col gap-1.5">
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-            Good morning, {managerName}
+            {t('dashboard.greeting') ? t('dashboard.greeting').replace('{name}', managerName) : `Good morning, ${managerName}`}
           </h2>
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-full border border-emerald-100 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Online
+              {t('dashboard.online') || 'Online'}
             </span>
             <span className="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold text-xs rounded-full border border-blue-100">
               Pit Head · Duty
@@ -73,7 +75,7 @@ const ManagerDashboard = () => {
               </div>
               <div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                  CURRENT SHIFT
+                  {t('dashboard.currentShift') || 'CURRENT SHIFT'}
                 </div>
                 <div className="text-2xl font-black text-slate-900 tracking-tight">
                   06:00 - 14:00
@@ -91,7 +93,7 @@ const ManagerDashboard = () => {
               <Clock3 className="w-4 h-4" /> {timeLeft}
             </div>
             <div className="text-xs font-bold px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100">
-              On Schedule
+              {t('dashboard.onSchedule') || 'On Schedule'}
             </div>
           </div>
         </div>
@@ -99,7 +101,7 @@ const ManagerDashboard = () => {
 
       {/* 3. MY DAY (3-Column Icon Grid) */}
       <div className="space-y-3.5">
-        <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest pl-1">My Day</h3>
+        <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest pl-1">{t('dashboard.myDay') || 'My Day'}</h3>
         
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {/* Attendance / Workforce */}
@@ -108,9 +110,9 @@ const ManagerDashboard = () => {
             className="bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] border border-white border-b-slate-200 flex flex-col items-center justify-center text-center transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] cursor-pointer"
           >
             <ShieldCheck className="w-7 h-7 text-emerald-500 mb-2.5" />
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">Attendance</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">{t('navigation.attendance') || 'Attendance'}</span>
             <div className="text-sm sm:text-base font-black text-slate-900 mt-1">
-              Present
+              {t('dashboard.present') || 'Present'}
             </div>
           </div>
           
@@ -120,9 +122,9 @@ const ManagerDashboard = () => {
             className="bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] border border-white border-b-slate-200 flex flex-col items-center justify-center text-center transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] cursor-pointer"
           >
             <Clock3 className="w-7 h-7 text-[#003366] mb-2.5" />
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">Shift</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">{t('dashboard.shift') || 'Shift'}</span>
             <div className="text-sm sm:text-base font-black text-slate-900 mt-1 truncate w-full">
-              Morning Shift
+              {t('mock.morningShift') || 'Morning Shift'}
             </div>
           </div>
           
@@ -137,9 +139,9 @@ const ManagerDashboard = () => {
               </div>
             )}
             <CheckSquare className="w-7 h-7 text-amber-500 mb-2.5" />
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">Tasks</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-widest">{t('navigation.myTasks') || 'Tasks'}</span>
             <div className="text-sm sm:text-base font-black text-slate-900 mt-1">
-              {pendingActions} Pending
+              {pendingActions} {t('common.pending') || 'Pending'}
             </div>
           </div>
         </div>
@@ -148,7 +150,7 @@ const ManagerDashboard = () => {
       {/* 4. MY PRIORITIES (Horizontal Scroll / Stacked Priority Cards) */}
       <div className="space-y-3.5">
         <div className="flex items-center justify-between pl-1 pr-1">
-          <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest">My Priorities</h3>
+          <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest">{t('dashboard.priorities') || 'My Priorities'}</h3>
           <span className="text-xs font-bold text-[#003366] cursor-pointer hover:underline" onClick={() => navigate('/manager/actions')}>
             View all
           </span>

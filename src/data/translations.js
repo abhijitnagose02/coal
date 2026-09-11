@@ -157,7 +157,7 @@ export const translations = {
     assignedTo: "Assigned To",
     deadline: "Deadline",
     status: "Status",
-    priority: "Priority"
+    priority: "Priority",
     worker: "Worker",
     mock: {
       morningShift: "Morning Shift",
@@ -301,7 +301,7 @@ export const translations = {
     assignedTo: "सौंपा गया",
     deadline: "अंतिम तिथि",
     status: "स्थिति",
-    priority: "प्राथमिकता"
+    priority: "प्राथमिकता",
     worker: "कर्मचारी",
     safetyOfficer: "सुरक्षा अधिकारी",
     subsidiaryGM: "सहायक महाप्रबंधक",
@@ -448,7 +448,7 @@ export const translations = {
     verifyClose: "पडताळणी आणि बंद करा",
     assignedTo: "नेमलेले",
     deadline: "अंतिम मुदत",
-    priority: "प्राधान्य"
+    priority: "प्राधान्य",
     worker: "कामगार",
     safetyOfficer: "सुरक्षा अधिकारी",
     subsidiaryGM: "उपकंपनी महाव्यवस्थापक",
@@ -847,22 +847,23 @@ export const translations = {
 // Fallback to English for languages without full translations yet
 export const t = (langCode, key, params = {}) => {
   const getNested = (obj, path) => {
+    if (!obj || !path) return undefined;
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   };
   
   let text = getNested(translations[langCode], key);
   
-  if (!text && langCode !== 'en') {
-    text = getNested(translations['en'], key); // fallback to English
-  }
-  return (translations['en'] && translations['en'][key]) || key;
-  
   // Also try root level if not found (for legacy support during transition)
   if (!text && translations[langCode] && translations[langCode][key]) {
     text = translations[langCode][key];
   }
-  if (!text && translations['en'] && translations['en'][key]) {
-    text = translations['en'][key];
+
+  // Fallback to English
+  if (!text && langCode !== 'en') {
+    text = getNested(translations['en'], key);
+    if (!text && translations['en'] && translations['en'][key]) {
+      text = translations['en'][key];
+    }
   }
   
   if (!text) return key;

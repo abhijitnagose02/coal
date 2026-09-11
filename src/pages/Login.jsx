@@ -17,8 +17,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 'en' is default language code
-  const [language, setLanguage] = useState('en');
-  const [subsidiary, setSubsidiary] = useState('WCL - Western Coalfields Limited');
   const { language, setLanguage, t, languages } = useLanguage();
   const [subsidiary, setSubsidiary] = useState('SECL - South Eastern Coalfields Limited');
 
@@ -115,10 +113,6 @@ const Login = () => {
                 <div className="relative w-full">
                   <Input 
                     className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-3 pl-3 pr-10 text-slate-800 font-medium focus:bg-white focus:border-[#136c4b] focus:ring-1 focus:ring-[#136c4b] transition-all sm:text-sm cursor-text hover:border-slate-300 outline-none"
-                    displayValue={(langCode) => {
-                      const lang = languages.find(l => l.code === langCode);
-                      return lang ? lang.name : '';
-                    }}
                   />
                   <AriaButton className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 focus:outline-none hover:text-[#136c4b] transition-colors">
                     <ChevronDown className="w-4 h-4" />
@@ -250,7 +244,7 @@ const Login = () => {
                 </div>
               </div>
 
-              {selectedRole !== 'manager' && selectedRole !== 'worker' && (
+              {selectedRole !== 'manager' && selectedRole !== 'worker' && selectedRole !== 'safety_officer' && (
                 <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r text-sm text-amber-700 font-medium flex items-start shadow-sm">
                   <AlertTriangle className="w-5 h-5 mr-2.5 flex-shrink-0 text-amber-500 mt-0.5" />
                   <div>
@@ -270,7 +264,7 @@ const Login = () => {
               <div className="pt-4">
                 <button
                   type="submit"
-                  disabled={isLoading || (selectedRole !== 'manager' && selectedRole !== 'worker')}
+                  disabled={isLoading || (selectedRole !== 'manager' && selectedRole !== 'worker' && selectedRole !== 'safety_officer')}
                   className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-[#136c4b] hover:bg-[#0e5239] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#136c4b] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (

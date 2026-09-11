@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { WorkerProvider } from './context/WorkerContext';
 import { ManagerProvider } from './context/ManagerContext';
+import { SafetyProvider } from './context/SafetyContext';
 import { LanguageProvider } from './context/LanguageContext';
 import AppShell from './components/layout/AppShell';
 import WorkerLayout from './components/layout/WorkerLayout';
 import ManagerLayout from './components/manager/ManagerLayout';
+import SafetyLayout from './components/layout/SafetyLayout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import PlaceholderModule from './components/ui/PlaceholderModule';
@@ -25,6 +27,9 @@ import WorkerGrievances from './pages/worker/WorkerGrievances';
 import WorkerNotifications from './pages/worker/WorkerNotifications';
 import WorkerHistory from './pages/worker/WorkerHistory';
 import WorkerProfile from './pages/worker/WorkerProfile';
+
+// Safety Pages
+import SafetyDashboard from './pages/safety/SafetyDashboard';
 
 // Manager Pages
 import ManagerDashboard from './pages/manager/ManagerDashboard';
@@ -79,6 +84,14 @@ const RoleLayoutWrapper = () => {
       </ManagerProvider>
     );
   }
+
+  if (currentUser?.role === 'safety_officer') {
+    return (
+      <SafetyProvider>
+        <SafetyLayout />
+      </SafetyProvider>
+    );
+  }
   
   return <AppShell />;
 };
@@ -87,6 +100,7 @@ function AppRoutes() {
   const { currentUser } = useAuth();
   const isWorker = currentUser?.role === 'worker';
   const isManager = currentUser?.role === 'manager';
+  const isSafetyOfficer = currentUser?.role === 'safety_officer';
 
   return (
     <Routes>
@@ -97,6 +111,7 @@ function AppRoutes() {
         <Route index element={
           isWorker ? <WorkerDashboard /> :
           isManager ? <ManagerDashboard /> :
+          isSafetyOfficer ? <SafetyDashboard /> :
           <Dashboard />
         } />
         
