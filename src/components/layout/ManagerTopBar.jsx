@@ -1,5 +1,5 @@
-import React from 'react';
-import { Bell, Menu, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bell, Globe, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useManager } from '../../context/ManagerContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -9,10 +9,36 @@ const ManagerTopBar = () => {
   const managerContext = useManager();
   const { language, setLanguage, languages } = useLanguage();
   
-  const unreadAlerts = managerContext?.attentionItems?.length || 0;
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [localNotifications, setLocalNotifications] = useState([]);
+
+  useEffect(() => {
+    const loadNotifications = () => {
+      const stored = JSON.parse(localStorage.getItem('managerNotifications') || '[]');
+      setLocalNotifications(stored);
+    };
+    
+    loadNotifications();
+    window.addEventListener('storage', loadNotifications);
+    const interval = setInterval(loadNotifications, 2000);
+    
+    return () => {
+      window.removeEventListener('storage', loadNotifications);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const clearLocalNotifications = () => {
+    localStorage.removeItem('managerNotifications');
+    setLocalNotifications([]);
+    setShowNotifications(false);
+  };
+
+  const systemAlerts = managerContext?.attentionItems?.length || 0;
+  const totalUnread = systemAlerts + localNotifications.length;
 
   return (
-    <header className="sticky top-0 z-40 bg-[#003366] px-5 py-3.5 flex items-center justify-between shadow-md">
+    <header className="sticky top-0 z-50 bg-[#003366] px-5 py-3.5 flex items-center justify-between shadow-md relative">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full border-2 border-white/20 overflow-hidden shadow-sm shrink-0">
           <img 
@@ -49,15 +75,76 @@ const ManagerTopBar = () => {
           </div>
         </div>
 
-        <button className="relative p-2 rounded-full text-white/80 hover:bg-white/10 transition">
+        <button 
+          onClick={() => setShowNotifications(!showNotifications)}
+          className="relative p-2 rounded-full text-white/80 hover:bg-white/10 transition"
+        >
           <Bell className="w-5 h-5" />
-          {unreadAlerts > 0 && (
+          {totalUnread > 0 && (
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-[#003366]">
-              {unreadAlerts}
+              {totalUnread}
             </span>
           )}
         </button>
       </div>
+
+      {/* Notifications Dropdown */}
+      {showNotifications && (
+        <div className="absolute top-full right-4 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+          <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+            <h3 className="font-black text-slate-800">Notifications</h3>
+            {localNotifications.length > 0 && (
+              <button onClick={clearLocalNotifications} className="text-xs font-bold text-blue-600 hover:text-blue-800">
+                Clear Field Evidence
+              </button>
+            )}
+          </div>
+          
+          <div className="max-h-96 overflow-y-auto">
+            {localNotifications.length === 0 && systemAlerts === 0 ? (
+              <div className="p-6 text-center text-slate-500 font-medium text-sm">
+                No new notifications
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {/* Field Evidence Notifications (from local storage) */}
+                {localNotifications.map(n => (
+                  <div key={n.id} className="p-4 bg-blue-50/50 hover:bg-blue-50 transition-colors">
+                    <div className="flex items-start justify-between mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-600">Field Evidence</span>
+                      <span className="text-[10px] font-bold text-slate-400">Just now</span>
+                    </div>
+                    <h4 className="font-bold text-sm text-slate-800 mb-1">{n.title}</h4>
+                    <p className="text-xs font-medium text-slate-600 mb-3">{n.message}</p>
+                    {n.evidence && (
+                      <div className="rounded-xl overflow-hidden border border-slate-200 bg-black">
+                        {n.evidence.type === 'photo' ? (
+                          <img src={n.evidence.url} alt="Evidence" className="w-full h-32 object-contain" />
+                        ) : (
+                          <video src={n.evidence.url} controls className="w-full h-32 object-contain" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* System Alerts */}
+                {managerContext?.attentionItems?.map(item => (
+                  <div key={item.id} className="p-4 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-start justify-between mb-1">
+                      <span className={`text-[10px] font-black uppercase tracking-wider ${item.severity === 'Critical' ? 'text-red-600' : 'text-amber-600'}`}>
+                        {item.type}
+                      </span>
+                    </div>
+                    <h4 className="font-bold text-sm text-slate-800 mb-1">{item.title}</h4>
+                    <p className="text-xs font-medium text-slate-500 line-clamp-2">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

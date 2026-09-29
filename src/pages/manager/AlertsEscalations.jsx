@@ -1,16 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useManager } from '../../context/ManagerContext';
 import { 
   Bell, AlertTriangle, ShieldAlert, ArrowRight, 
-  MapPin, CheckCircle, Clock, ShieldCheck 
+  MapPin, CheckCircle, Clock, ShieldCheck, Paperclip
 } from 'lucide-react';
 
 const AlertsEscalations = () => {
   const { attentionItems, openAiExplanation, openActionDetail, escalateAction } = useManager();
   const [filterSeverity, setFilterSeverity] = useState('all');
+  const [localAlerts, setLocalAlerts] = useState([]);
+  const [replyText, setReplyText] = useState({});
+
+  const handleReply = (alertId) => {
+    const text = replyText[alertId];
+    if (!text) return;
+    
+    const notification = {
+      id: Date.now().toString(),
+      title: "Mine Manager Instruction",
+      message: text,
+      timestamp: new Date().toISOString(),
+      unread: true,
+      originalAlertId: alertId
+    };
+    
+    const existing = JSON.parse(localStorage.getItem('safetyNotifications') || '[]');
+    localStorage.setItem('safetyNotifications', JSON.stringify([notification, ...existing]));
+    
+    setReplyText({ ...replyText, [alertId]: '' });
+    alert('Instruction sent to Safety Officer/Worker!');
+  };
+
+  useEffect(() => {
+    const loadAlerts = () => {
+      const stored = JSON.parse(localStorage.getItem('managerNotifications') || '[]');
+      const formatted = stored.map(n => ({
+        id: `ALT-${n.id.slice(-4)}`,
+        priority: "HIGH",
+        severity: "High",
+        badgeColor: "bg-blue-100 text-blue-700 border-blue-200",
+        what: n.title,
+        where: n.message.split(' at ')[1]?.split('.')[0] || "Colliery Zone",
+        why: n.message,
+        who: "Safety Officer / Worker",
+        when: "Just now",
+        whatNext: "Review attached evidence and deploy immediate corrective action.",
+        evidence: n.evidence,
+        isNew: true
+      }));
+      setLocalAlerts(formatted);
+    };
+    
+    loadAlerts();
+    window.addEventListener('storage', loadAlerts);
+    // Poll to ensure cross-route sync without refresh
+    const interval = setInterval(loadAlerts, 2000);
+    return () => {
+      window.removeEventListener('storage', loadAlerts);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const mappedAttentionItems = attentionItems.map(item => ({
+    id: item.id,
+    priority: item.severity.toUpperCase(),
+    severity: item.severity,
+    badgeColor: item.severity === 'Critical' ? "bg-red-100 text-red-700 border-red-200" : "bg-amber-100 text-amber-700 border-amber-200",
+    what: item.title || item.what,
+    where: item.where || "Multiple Zones",
+    why: item.description || item.why,
+    who: item.who || (item.aiGenerated ? "AI Copilot" : "System Sensor"),
+    when: item.when || new Date(item.timestamp).toLocaleDateString(),
+    whatNext: item.whatNext || (item.actionRequired ? "Immediate Managerial Review Required" : "Monitor closely")
+  }));
 
   const alerts = [
-    ...attentionItems,
+    ...localAlerts,
+    ...mappedAttentionItems,
     {
       id: "ALT-05",
       priority: "CRITICAL",
@@ -81,9 +147,10 @@ const AlertsEscalations = () => {
       {/* Alerts Feed */}
       <div className="space-y-4">
         {filteredAlerts.map((alert) => (
-          <div key={alert.id} className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-3">
+          <div key={alert.id} className={`bg-white rounded-2xl p-5 border shadow-xs space-y-3 ${alert.isNew ? 'border-blue-400 ring-4 ring-blue-50' : 'border-slate-200/90'}`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2.5">
+                {alert.isNew && <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>}
                 <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${alert.badgeColor}`}>
                   {alert.severity} Severity
                 </span>
@@ -102,6 +169,44 @@ const AlertsEscalations = () => {
                 <div className="text-amber-900 font-semibold"><strong>Required Next Action:</strong> {alert.whatNext}</div>
               </div>
             </div>
+
+            {/* Render uploaded evidence from Safety Officer if present */}
+            {alert.evidence && (
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+                  <Paperclip className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-blue-800 mb-2">Attached Field Evidence ({alert.evidence.type})</p>
+                  <div className="max-w-xs rounded-lg overflow-hidden border border-blue-200 shadow-sm">
+                    {alert.evidence.type === 'photo' ? (
+                      <img src={alert.evidence.url} alt="Evidence" className="w-full h-32 object-cover" />
+                    ) : (
+                      <video src={alert.evidence.url} controls className="w-full h-32 object-cover" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Interaction / Negotiation Reply Box */}
+            {alert.isNew && (
+              <div className="mt-3 pt-3 border-t border-slate-100 flex gap-2">
+                <input 
+                  type="text" 
+                  value={replyText[alert.id] || ''}
+                  onChange={(e) => setReplyText({ ...replyText, [alert.id]: e.target.value })}
+                  placeholder="Type an instruction or reply to the Safety Officer..." 
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                />
+                <button 
+                  onClick={() => handleReply(alert.id)}
+                  className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-sm shadow-blue-200"
+                >
+                  Send Reply
+                </button>
+              </div>
+            )}
 
             <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
               <span className="font-mono text-slate-400 font-bold">{alert.id}</span>

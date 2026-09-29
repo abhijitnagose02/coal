@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext } from 'react';
 import { demoUsers } from '../data/mockData';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useLocalStorage('koylasetu_user', null);
   const [language, setLanguage] = useState(() => localStorage.getItem('koylasetu_lang') || 'en');
   const [subsidiary, setSubsidiary] = useState('WCL - Western Coalfields Limited');
   const [activeMine, setActiveMine] = useState('Kamptee Colliery');

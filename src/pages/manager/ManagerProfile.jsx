@@ -1,15 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useManager } from '../../context/ManagerContext';
 import { 
   User, Building2, MapPin, Award, Phone, 
-  Mail, ShieldCheck, Globe, LogOut, KeyRound 
+  Mail, ShieldCheck, Globe, LogOut, KeyRound, Edit2, Save, X 
 } from 'lucide-react';
 
 const ManagerProfile = () => {
-  const { logout, language } = useAuth();
-  const { mineDetails } = useManager();
+  const { logout } = useAuth();
+  const { mineDetails, updateManagerProfile } = useManager();
   const manager = mineDetails.manager;
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    email: manager.email || '',
+    phone: manager.phone || '',
+    name: manager.name || ''
+  });
+
+  const handleSave = () => {
+    updateManagerProfile({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone
+    });
+    setIsEditing(false);
+  };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -18,18 +34,40 @@ const ManagerProfile = () => {
       <div className="bg-gradient-to-r from-slate-900 via-[#0a3560] to-[#0f4c81] rounded-2xl p-6 text-white shadow-md border border-slate-800 flex flex-col sm:flex-row items-center gap-6">
         <div className="w-24 h-24 rounded-2xl bg-white/10 border-2 border-yellow-400/80 overflow-hidden shadow-lg shrink-0">
           <img 
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" 
+            src={manager.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"} 
             alt={manager.name}
             className="w-full h-full object-cover"
           />
         </div>
 
-        <div className="text-center sm:text-left space-y-1">
+        <div className="text-center sm:text-left space-y-1 relative w-full pr-8">
+          {/* Edit Button */}
+          {!isEditing && (
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="absolute top-0 right-0 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+              title="Edit Profile"
+            >
+              <Edit2 className="w-4 h-4 text-white" />
+            </button>
+          )}
+
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">{manager.name}</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-yellow-400 text-slate-900">
-              Mine Manager
-            </span>
+            {isEditing ? (
+              <input 
+                type="text" 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="text-2xl font-bold tracking-tight text-slate-900 bg-white px-2 py-1 rounded w-full max-w-[200px]"
+              />
+            ) : (
+              <h1 className="text-2xl font-bold tracking-tight text-white">{manager.name}</h1>
+            )}
+            {!isEditing && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-yellow-400 text-slate-900">
+                Mine Manager
+              </span>
+            )}
           </div>
           <p className="text-sm text-slate-300 font-medium">{manager.designation}</p>
           <div className="text-xs text-slate-300 flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1">
@@ -81,14 +119,53 @@ const ManagerProfile = () => {
               <span className="font-bold text-slate-800">{mineDetails.name} ({mineDetails.area})</span>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Email Address</span>
-              <span className="font-semibold text-slate-800">{manager.email}</span>
+              <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Email Address</span>
+              {isEditing ? (
+                <input 
+                  type="email" 
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              ) : (
+                <span className="font-semibold text-slate-800">{manager.email}</span>
+              )}
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Contact Phone</span>
-              <span className="font-semibold text-slate-800">{manager.phone}</span>
+              <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Contact Phone</span>
+              {isEditing ? (
+                <input 
+                  type="tel" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              ) : (
+                <span className="font-semibold text-slate-800">{manager.phone}</span>
+              )}
             </div>
           </div>
+          
+          {/* Action Buttons */}
+          {isEditing && (
+            <div className="flex gap-2 pt-2 border-t border-slate-100 mt-4">
+              <button 
+                onClick={handleSave}
+                className="flex-1 bg-[#0f4c81] text-white font-bold py-2 rounded-lg text-xs hover:bg-[#0a3560] transition-colors flex items-center justify-center gap-2"
+              >
+                <Save className="w-4 h-4" /> Save Profile
+              </button>
+              <button 
+                onClick={() => {
+                  setFormData({ email: manager.email, phone: manager.phone, name: manager.name });
+                  setIsEditing(false);
+                }}
+                className="flex-1 bg-slate-100 text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+              >
+                <X className="w-4 h-4" /> Cancel
+              </button>
+            </div>
+          )}
         </div>
 
       </div>

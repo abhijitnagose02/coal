@@ -21,7 +21,7 @@ const ManagerBottomNav = () => {
           }
         >
           <LayoutDashboard className="w-5 h-5" />
-          <span className="text-[10px] font-bold">{t('navigation.dashboard') || 'Dashboard'}</span>
+          <span className="text-[10px] font-bold">{t('navigation.dashboard') || 'Home'}</span>
         </NavLink>
         
         <NavLink 

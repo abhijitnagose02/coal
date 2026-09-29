@@ -18,7 +18,7 @@ const Sidebar = () => {
       case 'manager':
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard'), path: '/', icon: LayoutDashboard },
+          { name: t('navigation.dashboard') || 'Home', path: '/', icon: LayoutDashboard },
           { name: t('compliance'), path: '/compliance', icon: ShieldCheck },
           { name: t('inspections'), path: '/inspections', icon: ClipboardList },
           { name: t('violations') || 'Violations', path: '/violations', icon: AlertTriangle },
@@ -54,7 +54,7 @@ const Sidebar = () => {
       case 'subsidiary_gm':
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard'), path: '/', icon: LayoutDashboard },
+          { name: t('navigation.dashboard') || 'Home', path: '/', icon: LayoutDashboard },
           { name: t('mineComparison') || 'Mine Comparison', path: '/comparison', icon: BarChart3 },
           { name: t('riskHeatmap') || 'Risk Heatmap', path: '/heatmap', icon: Map },
           { name: t('violations') || 'Violations', path: '/violations', icon: AlertTriangle },
@@ -66,7 +66,7 @@ const Sidebar = () => {
       case 'cil_hq_director':
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard') || 'Enterprise Dashboard', path: '/', icon: Globe },
+          { name: t('navigation.dashboard') || 'Enterprise Home', path: '/', icon: Globe },
           { name: t('subsidiaries') || 'Subsidiaries', path: '/subsidiaries', icon: Users },
           { name: t('analytics') || 'Cross-Mine Analytics', path: '/analytics', icon: TrendingUp },
           { name: t('systemicRisks') || 'Systemic Risks', path: '/systemic-risks', icon: AlertTriangle },
@@ -77,7 +77,7 @@ const Sidebar = () => {
       case 'ministry': // DGMS Regulator
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard') || 'Regulator Dashboard', path: '/', icon: LayoutDashboard },
+          { name: t('navigation.dashboard') || 'Regulator Home', path: '/', icon: LayoutDashboard },
           { name: t('mines') || 'Mines', path: '/mines', icon: Map },
           { name: t('compliance'), path: '/compliance', icon: ShieldCheck },
           { name: t('violations') || 'Violations', path: '/violations', icon: AlertTriangle },
@@ -89,7 +89,7 @@ const Sidebar = () => {
       case 'contractor':
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard'), path: '/', icon: LayoutDashboard },
+          { name: t('navigation.dashboard') || 'Home', path: '/', icon: LayoutDashboard },
           { name: t('compliance'), path: '/compliance', icon: ShieldCheck },
           { name: t('licences') || 'Licences', path: '/licences', icon: FileBadge },
           { name: t('navigation.training'), path: '/training', icon: Users },
@@ -124,7 +124,7 @@ const Sidebar = () => {
       default:
         return [
           { heading: t('governance') || 'Governance Modules' },
-          { name: t('dashboard'), path: '/', icon: LayoutDashboard }
+          { name: t('navigation.dashboard') || 'Home', path: '/', icon: LayoutDashboard }
         ];
     }
   };

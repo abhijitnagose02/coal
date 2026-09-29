@@ -1,14 +1,14 @@
 export const initialWorkerState = {
   profile: {
     id: "WRK001",
-    name: "Rahul Sharma",
+    name: "Dhruv Patil",
     designation: "Mining Worker",
     department: "Mining Operations",
     subsidiary: "WCL",
     location: "Kamptee Colliery",
     role: "worker",
     phone: "+91 9876543210",
-    email: "rahul.sharma@demo.wcl.in",
+    email: "dhruv.patil@demo.wcl.in",
     manager: "A. K. Verma",
     joinDate: "2018-05-12"
   },

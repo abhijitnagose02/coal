@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useManager } from '../../context/ManagerContext';
 import { 
   ClipboardList, CheckCircle, Clock, AlertTriangle, 
-  MapPin, User, ArrowRight, Eye, UserPlus, ShieldAlert 
+  MapPin, User, ArrowRight, Eye, UserPlus, ShieldAlert, Users 
 } from 'lucide-react';
 
 const InspectionsList = () => {
@@ -93,7 +93,7 @@ const InspectionsList = () => {
             </div>
 
             {/* Findings */}
-            {ins.findings.length > 0 && (
+            {ins.findings?.length > 0 && (
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs">
                 <span className="font-bold text-[11px] uppercase tracking-wider text-slate-500 block">
                   Recorded Observations ({ins.findings.length})
@@ -104,6 +104,60 @@ const InspectionsList = () => {
                     <span>{finding}</span>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Inspection Media / Images */}
+            {ins.images && ins.images.length > 0 && (
+              <div className="space-y-2 pt-2">
+                <span className="font-bold text-[11px] uppercase tracking-wider text-slate-500 block">
+                  Inspection Media Evidence
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {ins.images.map((img, idx) => (
+                    <div key={idx} className="rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-sm h-48">
+                      <img src={img} alt={`Evidence ${idx+1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=Image+Expired'; }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mine Personnel Attached */}
+            {ins.personnel && (
+              <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50 space-y-3 mt-2">
+                <span className="font-bold text-[11px] uppercase tracking-wider text-[#0f4c81] flex items-center gap-1.5">
+                  <UserPlus className="w-3.5 h-3.5" /> Mine Personnel Appointed
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Safety Officers */}
+                  <div>
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-2 flex items-center gap-1.5">
+                      <ShieldAlert className="w-3 h-3" /> Safety Officers
+                    </h4>
+                    <ul className="space-y-1.5">
+                      {ins.personnel.safetyOfficers.map((so, idx) => (
+                        <li key={idx} className="text-xs font-semibold text-slate-800 flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-[#0f4c81] text-white flex items-center justify-center text-[9px]">{so.charAt(0)}</div>
+                          {so}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {/* Workers */}
+                  <div>
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-2 flex items-center gap-1.5">
+                      <Users className="w-3 h-3" /> Assigned Workers
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {ins.personnel.workers.map((worker, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-medium text-slate-600 shadow-xs">
+                          {worker}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

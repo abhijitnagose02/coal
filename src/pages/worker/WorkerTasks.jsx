@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWorker } from '../../context/WorkerContext';
-import { CheckCircle, Clock, AlertTriangle, X, Paperclip, Send, Check } from 'lucide-react';
+import { CheckCircle, Clock, AlertTriangle, X, Paperclip, Send, Check, Camera } from 'lucide-react';
 
 const WorkerTasks = () => {
   const { tasks, markTaskComplete, updateTaskStatus } = useWorker();
@@ -125,11 +125,15 @@ const WorkerTasks = () => {
               )}
             </div>
             
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+            <div className="p-6 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4">
               <span className="text-sm text-slate-500 font-medium">
                 Current Status: <strong className="text-slate-800">{selectedTask.status}</strong>
               </span>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3 items-center">
+                <label className="cursor-pointer px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg font-bold text-sm shadow-sm hover:bg-slate-50 flex items-center gap-2">
+                  <Camera className="w-4 h-4" /> Upload Photo
+                  <input type="file" className="hidden" accept="image/*" />
+                </label>
                 {selectedTask.status === 'Pending' && (
                   <button 
                     onClick={() => handleTaskAction(selectedTask.id, 'In Progress')}

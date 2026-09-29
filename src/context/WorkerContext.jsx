@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { initialWorkerState } from '../data/mockWorkerProfile';
 
 const WorkerContext = createContext();
@@ -6,7 +7,7 @@ const WorkerContext = createContext();
 export const useWorker = () => useContext(WorkerContext);
 
 export const WorkerProvider = ({ children }) => {
-  const [workerState, setWorkerState] = useState(initialWorkerState);
+  const [workerState, setWorkerState] = useLocalStorage('worker_state', initialWorkerState);
 
   // Helper to add history
   const addHistory = (text, type) => {
@@ -61,6 +62,18 @@ export const WorkerProvider = ({ children }) => {
       ...prev,
       reports: [newReport, ...prev.reports]
     }));
+    
+    try {
+      const existing = JSON.parse(localStorage.getItem('safetyNotifications') || '[]');
+      const newNotif = {
+        id: Date.now(),
+        title: `Worker Report: ${reportData.type}`,
+        message: reportData.desc ? `${reportData.desc.substring(0, 50)}...` : 'New safety issue reported.',
+        isWorkerReport: true
+      };
+      localStorage.setItem('safetyNotifications', JSON.stringify([newNotif, ...existing]));
+      window.dispatchEvent(new Event('storage'));
+    } catch(e) {}
     
     addHistory(`Submitted new ${reportData.type} report`, 'Report');
   };

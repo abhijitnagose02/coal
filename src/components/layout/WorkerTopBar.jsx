@@ -1,15 +1,20 @@
 import React from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, AlertOctagon, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useWorker } from '../../context/WorkerContext';
 import { useLanguage } from '../../context/LanguageContext';
 
 const WorkerTopBar = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const workerContext = useWorker();
   const { t } = useLanguage();
   
   const unreadNotifications = workerContext?.notifications?.filter(n => !n.read).length || 0;
+
+  const handleSOS = () => {
+    // In a real app, this would trigger an immediate emergency workflow
+    alert('SOS Emergency Alert Sent to Safety Officer and Mine Manager!');
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200/80 px-5 py-3.5 flex items-center justify-between shadow-sm">
@@ -29,6 +34,13 @@ const WorkerTopBar = () => {
         </div>
       </div>
       <div className="flex items-center gap-3">
+        <button 
+          onClick={handleSOS}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all animate-pulse hover:animate-none font-bold text-xs"
+        >
+          <AlertOctagon className="w-4 h-4" />
+          <span>SOS</span>
+        </button>
         <button className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
           <Bell className="w-5 h-5" />
           {unreadNotifications > 0 && (
@@ -36,6 +48,13 @@ const WorkerTopBar = () => {
               {unreadNotifications}
             </span>
           )}
+        </button>
+        <button 
+          onClick={logout}
+          className="p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-600 border border-slate-200 transition"
+          title="Log out"
+        >
+          <LogOut className="w-5 h-5" />
         </button>
       </div>
     </header>

@@ -10,27 +10,27 @@ export const demoUsers = [
     role: "manager",
     userId: "manager@demo.local",
     password: "demo123",
-    name: "Amit Sharma",
+    name: "Shri Asheesh Kumar",
     designation: "Mine Manager",
     subsidiary: "WCL",
     mine: "Kamptee Colliery",
-    avatar: "https://ui-avatars.com/api/?name=Amit+Sharma&background=0f4c81&color=fff"
+    avatar: "/manager_profile.png"
   },
   {
     role: "safety_officer",
     userId: "safety_officer@demo.local",
     password: "demo123",
-    name: "Sunil Verma",
+    name: "Dhairya Deulkar",
     designation: "Safety Officer",
-    avatar: "https://ui-avatars.com/api/?name=Sunil+Verma&background=10b981&color=fff"
+    avatar: "/dhairya.jpg"
   },
   {
     role: "employee",
     userId: "employee@demo.local",
     password: "demo123",
-    name: "Amit Desai",
+    name: "Aryan Bhute",
     designation: "Field Inspector",
-    avatar: "https://ui-avatars.com/api/?name=Amit+Desai&background=0ea5e9&color=fff"
+    avatar: "https://ui-avatars.com/api/?name=Aryan+Bhute&background=0ea5e9&color=fff"
   },
   {
     role: "subsidiary_gm",
@@ -68,9 +68,9 @@ export const demoUsers = [
     role: "worker",
     userId: "worker@demo.local",
     password: "demo123",
-    name: "Rahul Sharma",
+    name: "Dhruv Patil",
     designation: "Mining Worker",
-    avatar: "https://ui-avatars.com/api/?name=Rahul+Sharma&background=0f4c81&color=fff"
+    avatar: "https://ui-avatars.com/api/?name=Dhruv+Patil&background=0f4c81&color=fff"
   }
 ];
 

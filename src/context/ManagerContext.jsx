@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const ManagerContext = createContext();
 
@@ -11,7 +12,16 @@ const initialMineDetails = {
   subsidiary: "WCL - Western Coalfields Limited",
   type: "Underground",
   location: "Nagpur, Maharashtra",
-  manager: { name: "Amit Sharma", designation: "Mine Manager" },
+  manager: { 
+    name: "Shri Asheesh Kumar", 
+    designation: "Mine Manager",
+    id: "EMP-204481",
+    statutoryCertificate: "DGMS/FCC/2012/4482",
+    experience: "14 Years (Underground Coal)",
+    email: "asheesh.kumar@coalindia.in",
+    phone: "+91 98765 43210",
+    avatar: "/manager_profile.png"
+  },
   complianceScore: 87,
   riskLevel: "Medium",
   lastInspection: "2026-09-08",
@@ -128,6 +138,8 @@ const initialCorrectiveActions = [
 
 const initialWorkforceData = {
   totalStrength: 342,
+  presentToday: 289,
+  attendancePct: 84,
   present: 289,
   absent: 53,
   onLeave: 18,
@@ -138,12 +150,35 @@ const initialWorkforceData = {
     { name: "Night (22:00–06:00)", workers: 46, status: "Completed" }
   ],
   departments: [
-    { name: "Mining Operations", count: 124 },
-    { name: "Safety & Compliance", count: 32 },
-    { name: "Maintenance", count: 45 },
-    { name: "Transport", count: 38 },
-    { name: "Administration", count: 22 },
-    { name: "Contractors", count: 47 }
+    { name: "Mining Operations", count: 124, present: 105, complianceRate: "98%" },
+    { name: "Safety & Compliance", count: 32, present: 30, complianceRate: "100%" },
+    { name: "Maintenance", count: 45, present: 41, complianceRate: "95%" },
+    { name: "Transport", count: 38, present: 34, complianceRate: "92%" },
+    { name: "Administration", count: 22, present: 19, complianceRate: "100%" },
+    { name: "Contractors", count: 47, present: 45, complianceRate: "90%" }
+  ],
+  skillCertifications: {
+    gasTestingCertified: 18,
+    firstClassManagers: 2,
+    secondClassManagers: 4,
+    overmenForemen: 12,
+    miningSirdars: 24,
+    firstAiders: 45
+  },
+  personnel: [
+    { id: "EMP-101", name: "Sunil Verma", role: "Safety Officer", status: "Present", attendance: 98 },
+    { id: "EMP-102", name: "Priya Patel", role: "Safety Officer", status: "Present", attendance: 95 },
+    { id: "EMP-103", name: "Anil Sharma", role: "Inspector", status: "Present", attendance: 92 },
+    { id: "EMP-104", name: "Vikram Singh", role: "Inspector", status: "On Leave", attendance: 88 },
+    { id: "EMP-105", name: "Dhruv Patil", role: "Mining Worker", status: "Present", attendance: 96 },
+    { id: "EMP-106", name: "Amit Desai", role: "Mining Worker", status: "Present", attendance: 94 },
+    { id: "EMP-107", name: "Prakash Verma", role: "Mining Worker", status: "Absent", attendance: 85 },
+    { id: "EMP-108", name: "Suresh Patil", role: "Blaster", status: "Present", attendance: 99 },
+    { id: "EMP-109", name: "Vijay Shinde", role: "Equipment Operator", status: "Present", attendance: 97 },
+    { id: "EMP-110", name: "Manoj Das", role: "Mining Worker", status: "Present", attendance: 91 },
+    { id: "EMP-111", name: "Sanjay Kumar", role: "Mining Worker", status: "On Leave", attendance: 89 },
+    { id: "EMP-112", name: "Ramesh Tiwari", role: "Maintenance", status: "Present", attendance: 93 },
+    { id: "EMP-113", name: "Deepak Roy", role: "Mining Worker", status: "Present", attendance: 90 }
   ]
 };
 
@@ -172,33 +207,47 @@ const initialIncidents = [
   }
 ];
 
-const initialInspections = [
+export const initialInspections = [
   {
     id: "INS-1042",
+    title: "Opencast Extraction Zone Audit",
     date: "2026-09-08",
     inspector: "Anil Sharma",
     type: "Safety Audit",
     status: "Completed",
-    observationsCount: 4,
-    zone: "Underground Sector 2"
+    severity: "High",
+    location: "Opencast Sector 2",
+    zone: "Opencast Sector 2",
+    findings: [
+      "Dust suppression system delayed activation in hauling area.",
+      "Heavy machinery operating near blast zone."
+    ],
+    relatedActionId: "ACT-335",
+    images: ["/inspection_1.png", "/inspection_2.png"],
+    personnel: {
+      safetyOfficers: ["Sunil Verma (Lead SO)", "Rajesh Tiwari"],
+      workers: ["Dhruv Patil (Operator)", "Amit Desai", "Prakash Verma", "Suresh Patil (Blaster)", "Vijay Shinde", "Manoj Das"]
+    }
   },
   {
     id: "INS-1043",
+    title: "Surface Plant Machinery Check",
     date: "2026-09-09",
     inspector: "Vikram Singh",
     type: "Environmental Check",
     status: "In Progress",
-    observationsCount: 1,
-    zone: "Surface Plant"
-  },
-  {
-    id: "INS-1044",
-    date: "2026-09-11",
-    inspector: "Pending Assignment",
-    type: "Structural Stability",
-    status: "Scheduled",
-    observationsCount: 0,
-    zone: "Panel 5"
+    severity: "Medium",
+    location: "Surface Plant",
+    zone: "Surface Plant",
+    findings: [
+      "Minor oil spill near crusher unit.",
+    ],
+    relatedActionId: "ACT-338",
+    images: ["/inspection_3.png", "/inspection_4.png"],
+    personnel: {
+      safetyOfficers: ["Priya Patel (Env Lead)"],
+      workers: ["Sanjay Kumar", "Ramesh Tiwari", "Deepak Roy"]
+    }
   }
 ];
 
@@ -272,6 +321,14 @@ const initialApprovals = [
     date: "2026-09-09",
     status: "Approved",
     details: "Extended shift for Panel 3 roof fall cleanup"
+  },
+  {
+    id: "APR-504",
+    type: "STATUTORY APPROVAL",
+    requestedBy: "Zone 4B Supervisor",
+    date: "2026-09-12",
+    status: "Pending",
+    details: "Overburden Blasting Clearance (Pre-blast sign-off)"
   }
 ];
 
@@ -290,34 +347,40 @@ const initialAuditHistory = [
 ];
 
 const initialGisZones = [
-  { id: "Z-1", name: "Underground Sector 1", risk: "Low", workers: 32, status: "Normal" },
-  { id: "Z-2", name: "Underground Sector 2", risk: "High", workers: 28, status: "Alert" },
-  { id: "Z-3", name: "Underground Sector 3", risk: "Medium", workers: 18, status: "Normal" },
-  { id: "Z-4", name: "Underground Sector 4", risk: "Critical", workers: 0, status: "Evacuated" },
-  { id: "Z-5", name: "Surface Plant", risk: "Low", workers: 45, status: "Normal" },
-  { id: "Z-6", name: "Overburden Dump", risk: "Medium", workers: 12, status: "Normal" }
+  { id: "Z-1", name: "Opencast Coal Mine", riskLevel: "Low", riskScore: 12, workers: 120, status: "Normal", coordinates: { x: 8, y: 17 }, sensors: { methaneCH4: "0.1%", airVelocity: "N/A" } },
+  { id: "Z-2", name: "Shah Coal Pvt. Ltd.", riskLevel: "Medium", riskScore: 45, workers: 85, status: "Alert", coordinates: { x: 37, y: 29 }, sensors: { methaneCH4: "0.3%", airVelocity: "N/A" } },
+  { id: "Z-3", name: "Agarwal Coal", riskLevel: "Low", riskScore: 22, workers: 45, status: "Normal", coordinates: { x: 57, y: 8 }, sensors: { methaneCH4: "0.1%", airVelocity: "N/A" } },
+  { id: "Z-4", name: "Mahakali Colliery U/G", riskLevel: "High", riskScore: 88, workers: 0, status: "Evacuated", coordinates: { x: 73, y: 29 }, sensors: { methaneCH4: "1.5%", airVelocity: "Low" } },
+  { id: "Z-5", name: "Manna Underground", riskLevel: "Low", riskScore: 18, workers: 60, status: "Normal", coordinates: { x: 70, y: 43 }, sensors: { methaneCH4: "0.2%", airVelocity: "Good" } },
+  { id: "Z-6", name: "WCL-Open Mine (Ballarpur)", riskLevel: "Medium", riskScore: 55, workers: 210, status: "Normal", coordinates: { x: 83, y: 77 }, sensors: { methaneCH4: "0.1%", airVelocity: "N/A" } }
 ];
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export const ManagerProvider = ({ children }) => {
-  const [mineDetails] = useState(initialMineDetails);
-  const [kpis] = useState(initialKpis);
-  const [attentionItems, setAttentionItems] = useState(initialAttentionItems);
-  const [aiInsights] = useState(initialAiInsights);
-  const [correctiveActions, setCorrectiveActions] = useState(initialCorrectiveActions);
-  const [workforceData] = useState(initialWorkforceData);
-  const [incidents] = useState(initialIncidents);
-  const [inspections] = useState(initialInspections);
-  const [complianceHealth] = useState(initialComplianceHealth);
-  const [riskCategories] = useState(initialRiskCategories);
-  const [contractors] = useState(initialContractors);
-  const [approvals, setApprovals] = useState(initialApprovals);
-  const [documents] = useState(initialDocuments);
-  const [auditHistory] = useState(initialAuditHistory);
-  const [gisZones] = useState(initialGisZones);
+  const [mineDetails, setMineDetails] = useLocalStorage('manager_mineDetails', initialMineDetails);
+  const [kpis] = useLocalStorage('manager_kpis', initialKpis);
+  const [attentionItems, setAttentionItems] = useLocalStorage('manager_attentionItems', initialAttentionItems);
+  const [aiInsights] = useLocalStorage('manager_aiInsights', initialAiInsights);
+  const [correctiveActions, setCorrectiveActions] = useLocalStorage('manager_correctiveActions', initialCorrectiveActions);
+  const [workforceData] = useLocalStorage('manager_workforceData', initialWorkforceData);
+  const [incidents] = useLocalStorage('manager_incidents', initialIncidents);
+  const [inspections, setInspections] = useLocalStorage('manager_inspections', initialInspections);
+  const [complianceHealth] = useLocalStorage('manager_complianceHealth', initialComplianceHealth);
+  const [riskCategories] = useLocalStorage('manager_riskCategories', initialRiskCategories);
+  const [contractors] = useLocalStorage('manager_contractors', initialContractors);
+  const [approvals, setApprovals] = useLocalStorage('manager_approvals', initialApprovals);
+  const [documents] = useLocalStorage('manager_documents', initialDocuments);
+  const [auditHistory] = useLocalStorage('manager_auditHistory', initialAuditHistory);
+  const [gisZones] = useLocalStorage('manager_gisZones', initialGisZones);
 
   // Helper functions used by manager pages
+  const updateManagerProfile = (updatedManager) => {
+    setMineDetails(prev => ({
+      ...prev,
+      manager: { ...prev.manager, ...updatedManager }
+    }));
+  };
 
   const openAiExplanation = (insightId) => {
     console.log('[ManagerContext] Open AI Explanation for:', insightId);
@@ -372,7 +435,8 @@ export const ManagerProvider = ({ children }) => {
     openActionDetail,
     openSiteDrawer,
     approveRequest,
-    escalateAction
+    escalateAction,
+    updateManagerProfile
   };
 
   return (

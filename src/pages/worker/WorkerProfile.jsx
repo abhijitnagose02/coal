@@ -30,14 +30,14 @@ const WorkerProfile = () => {
 
   // Synthetic demo data
   const demoProfile = {
-    name: profile?.name || 'Rahul Sharma',
+    name: profile?.name || 'Dhruv Patil',
     id: profile?.id || 'WRK001',
     designation: tm(profile?.designation || 'Mining Worker'),
     department: tm(profile?.department || 'Mining Operations'),
     subsidiary: tm(profile?.subsidiary || 'WCL'),
     mine: tm(profile?.location || 'Kamptee Colliery'),
     avatar: profile?.avatar || "https://images.unsplash.com/photo-1578357078586-491adf1aa5ba?w=150&auto=format&fit=crop&q=80",
-    email: 'rahul.sharma@wcl.coalindia.in',
+    email: 'dhruv.patil@wcl.coalindia.in',
     phone: '+91 91234 56789',
     language: languages.find(l => l.code === language)?.name || 'English',
     manager: 'Arun Patel (Shift In-Charge)'

@@ -55,7 +55,7 @@ export const translations = {
       settings: "Settings"
     },
     dashboard: {
-      greeting: "Good morning, {name}",
+      greeting: "Welcome, {name}",
       currentShift: "Current Shift",
       myDay: "My Day",
       priorities: "Priority Tasks",
@@ -112,7 +112,6 @@ export const translations = {
     errorPassword: "Please enter your password.",
     // Manager Modules & Navigation
     overview: "Overview",
-    dashboard: "Dashboard",
     mineOverview: "Mine Overview",
     monitoring: "Monitoring",
     riskIntelligence: "Risk Intelligence",
@@ -159,6 +158,93 @@ export const translations = {
     status: "Status",
     priority: "Priority",
     worker: "Worker",
+    shifts: {
+      title: "My Shifts",
+      subtitle: "View your current and upcoming roster.",
+      currentShift: "Current Shift",
+      supervisor: "Supervisor:",
+      upcomingShifts: "Upcoming Shifts",
+      noUpcoming: "No upcoming shifts scheduled."
+    },
+    compliance: {
+      subtitle: "Safety Connect, Alerts, and your Compliance Status.",
+      safetyConnect: "Safety Connect",
+      safetyConnectDesc: "Direct line to your Safety Officer and Mine Manager",
+      emergencySos: "Emergency SOS",
+      askQuestion: "Ask Question",
+      requestInspection: "Request Inspection",
+      reportIssue: "Report Issue",
+      messageOfficer: "Message Officer",
+      safetyAlerts: "Real-Time Safety Alerts",
+      complianceStatus: "Compliance:",
+      cleared: "Cleared for mining operations.",
+      suspended: "Suspended or incomplete.",
+      viewDetails: "View Details"
+    },
+    actions: {
+      title: "Corrective Actions",
+      subtitle: "Actions assigned to you to fix safety or compliance issues.",
+      openActions: "Open Actions",
+      assigned: "Assigned:",
+      due: "Due:",
+      noOpen: "No open corrective actions.",
+      closedActions: "Closed Actions",
+      closedOn: "Closed on:",
+      closed: "Closed"
+    },
+    training: {
+      title: "Safety Training",
+      subtitle: "Access your mandatory safety courses and certificates.",
+      actionRequired: "Action Required: Training Due",
+      dueBy: "Due by:",
+      startCourse: "Start Course",
+      completedCerts: "Completed Certifications",
+      completed: "Completed:",
+      valid: "Valid",
+      downloadCert: "Download Certificate",
+      noRecords: "No completed training records found."
+    },
+    documents: {
+      title: "My Documents",
+      subtitle: "Access your official IDs, certificates, and employment records.",
+      uploadDoc: "Upload Document",
+      docName: "Document Name",
+      category: "Category",
+      expiry: "Expiry"
+    },
+    grievances: {
+      title: "Requests & Grievances",
+      subtitle: "Submit HR requests or report workplace grievances.",
+      newRequest: "New Request",
+      dateFiled: "Date Filed",
+      noRequests: "No requests or grievances filed."
+    },
+    notifications: {
+      title: "Notifications",
+      subtitle: "Updates and alerts regarding your work.",
+      markAllRead: "Mark All Read",
+      new: "New",
+      noNotifications: "You have no notifications."
+    },
+    history: {
+      title: "My History",
+      subtitle: "Timeline of your recent activities and system events.",
+      noActivity: "No activity recorded yet."
+    },
+    attendance: {
+      subtitle: "View your attendance records and check-in status.",
+      todayStatus: "Today's Status",
+      checkedInAt: "Checked In at",
+      checkOut: "Check Out",
+      notCheckedIn: "Not Checked In",
+      readyToStart: "Ready to start your shift?",
+      checkInNow: "Check In Now",
+      attendanceRate: "Attendance Rate",
+      recentRecords: "Recent Records",
+      date: "Date",
+      status: "Status",
+      absent: "Absent"
+    },
     mock: {
       morningShift: "Morning Shift",
       safetyRefresher: "Safety Refresher",
@@ -203,7 +289,7 @@ export const translations = {
       settings: "सेटिंग्स"
     },
     dashboard: {
-      greeting: "शुभ प्रभात, {name}",
+      greeting: "स्वागत है, {name}",
       currentShift: "वर्तमान शिफ्ट",
       myDay: "मेरा दिन",
       priorities: "प्राथमिक कार्य",
@@ -351,7 +437,7 @@ export const translations = {
       settings: "सेटिंग्ज"
     },
     dashboard: {
-      greeting: "सुप्रभात, {name}",
+      greeting: "स्वागत आहे, {name}",
       currentShift: "सध्याची शिफ्ट",
       myDay: "माझा दिवस",
       priorities: "प्राधान्य कामे",
@@ -454,6 +540,180 @@ export const translations = {
     subsidiaryGM: "उपकंपनी महाव्यवस्थापक",
     cilHqDirector: "मुख्यालय संचालक",
     contractor: "कंत्राटदार",
+    shifts: {
+      title: "मेरी शिफ्ट",
+      subtitle: "अपना वर्तमान और आगामी रोस्टर देखें।",
+      currentShift: "वर्तमान शिफ्ट",
+      supervisor: "पर्यवेक्षक:",
+      upcomingShifts: "आगामी शिफ्ट",
+      noUpcoming: "कोई आगामी शिफ्ट निर्धारित नहीं है।"
+    },
+    compliance: {
+      subtitle: "सेफ्टी कनेक्ट, अलर्ट और आपकी अनुपालन स्थिति।",
+      safetyConnect: "सेफ्टी कनेक्ट",
+      safetyConnectDesc: "अपने सुरक्षा अधिकारी और खान प्रबंधक से सीधा संपर्क",
+      emergencySos: "आपातकालीन SOS",
+      askQuestion: "प्रश्न पूछें",
+      requestInspection: "निरीक्षण का अनुरोध करें",
+      reportIssue: "समस्या की रिपोर्ट करें",
+      messageOfficer: "अधिकारी को संदेश भेजें",
+      safetyAlerts: "रीयल-टाइम सुरक्षा अलर्ट",
+      complianceStatus: "अनुपालन:",
+      cleared: "खनन कार्यों के लिए स्वीकृत।",
+      suspended: "निलंबित या अपूर्ण।",
+      viewDetails: "विवरण देखें"
+    },
+    actions: {
+      title: "सुधारात्मक कार्य",
+      subtitle: "सुरक्षा या अनुपालन समस्याओं को ठीक करने के लिए आपको सौंपे गए कार्य।",
+      openActions: "खुले कार्य",
+      assigned: "सौंपा गया:",
+      due: "देय:",
+      noOpen: "कोई खुला सुधारात्मक कार्य नहीं।",
+      closedActions: "बंद कार्य",
+      closedOn: "बंद होने की तिथि:",
+      closed: "बंद"
+    },
+    training: {
+      title: "सुरक्षा प्रशिक्षण",
+      subtitle: "अपने अनिवार्य सुरक्षा पाठ्यक्रम और प्रमाणपत्र प्राप्त करें।",
+      actionRequired: "कार्रवाई आवश्यक: प्रशिक्षण देय",
+      dueBy: "देय तिथि:",
+      startCourse: "पाठ्यक्रम शुरू करें",
+      completedCerts: "पूर्ण प्रमाणपत्र",
+      completed: "पूर्ण:",
+      valid: "वैध",
+      downloadCert: "प्रमाणपत्र डाउनलोड करें",
+      noRecords: "कोई पूर्ण प्रशिक्षण रिकॉर्ड नहीं मिला।"
+    },
+    documents: {
+      title: "मेरे दस्तावेज़",
+      subtitle: "अपनी आधिकारिक आईडी, प्रमाणपत्र और रोजगार रिकॉर्ड तक पहुंचें।",
+      uploadDoc: "दस्तावेज़ अपलोड करें",
+      docName: "दस्तावेज़ का नाम",
+      category: "श्रेणी",
+      expiry: "समाप्ति"
+    },
+    grievances: {
+      title: "अनुरोध और शिकायतें",
+      subtitle: "एचआर अनुरोध सबमिट करें या कार्यस्थल की शिकायतों की रिपोर्ट करें।",
+      newRequest: "नया अनुरोध",
+      dateFiled: "दर्ज करने की तिथि",
+      noRequests: "कोई अनुरोध या शिकायत दर्ज नहीं की गई है।"
+    },
+    notifications: {
+      title: "सूचनाएं",
+      subtitle: "आपके काम से संबंधित अपडेट और अलर्ट।",
+      markAllRead: "सभी को पढ़ा हुआ चिह्नित करें",
+      new: "नया",
+      noNotifications: "आपके पास कोई सूचना नहीं है।"
+    },
+    history: {
+      title: "मेरा इतिहास",
+      subtitle: "आपकी हाल की गतिविधियों और सिस्टम ईवेंट की समयरेखा।",
+      noActivity: "अभी तक कोई गतिविधि दर्ज नहीं की गई है।"
+    },
+    shifts: {
+      title: "माझ्या शिफ्ट्स",
+      subtitle: "तुमचे वर्तमान आणि आगामी रोस्टर पहा.",
+      currentShift: "वर्तमान शिफ्ट",
+      supervisor: "पर्यवेक्षक:",
+      upcomingShifts: "आगामी शिफ्ट्स",
+      noUpcoming: "कोणतीही आगामी शिफ्ट नियोजित नाही."
+    },
+    compliance: {
+      subtitle: "सेफ्टी कनेक्ट, अलर्ट आणि तुमची अनुपालन स्थिती.",
+      safetyConnect: "सेफ्टी कनेक्ट",
+      safetyConnectDesc: "तुमच्या सुरक्षा अधिकारी आणि खाण व्यवस्थापकाशी थेट संपर्क",
+      emergencySos: "आणीबाणी SOS",
+      askQuestion: "प्रश्न विचारा",
+      requestInspection: "तपासणीची विनंती करा",
+      reportIssue: "समस्येची तक्रार करा",
+      messageOfficer: "अधिकाऱ्याला संदेश पाठवा",
+      safetyAlerts: "रिअल-टाइम सुरक्षा अलर्ट",
+      complianceStatus: "अनुपालन:",
+      cleared: "खाणकामासाठी मंजूर.",
+      suspended: "निलंबित किंवा अपूर्ण.",
+      viewDetails: "तपशील पहा"
+    },
+    actions: {
+      title: "सुधारात्मक कृती",
+      subtitle: "सुरक्षा किंवा अनुपालन समस्या सोडवण्यासाठी तुम्हाला दिलेली कामे.",
+      openActions: "प्रलंबित कृती",
+      assigned: "नेमून दिलेले:",
+      due: "देय:",
+      noOpen: "कोणतीही प्रलंबित सुधारात्मक कृती नाही.",
+      closedActions: "पूर्ण झालेल्या कृती",
+      closedOn: "पूर्ण झाल्याची तारीख:",
+      closed: "बंद"
+    },
+    training: {
+      title: "सुरक्षा प्रशिक्षण",
+      subtitle: "तुमचे अनिवार्य सुरक्षा अभ्यासक्रम आणि प्रमाणपत्रे मिळवा.",
+      actionRequired: "कृती आवश्यक: प्रशिक्षण देय",
+      dueBy: "देय तारीख:",
+      startCourse: "अभ्यासक्रम सुरू करा",
+      completedCerts: "पूर्ण झालेली प्रमाणपत्रे",
+      completed: "पूर्ण:",
+      valid: "वैध",
+      downloadCert: "प्रमाणपत्र डाउनलोड करा",
+      noRecords: "कोणतीही पूर्ण झालेली प्रशिक्षण नोंद आढळली नाही."
+    },
+    documents: {
+      title: "माझी कागदपत्रे",
+      subtitle: "तुमचे अधिकृत ओळखपत्र, प्रमाणपत्रे आणि रोजगार नोंदी पहा.",
+      uploadDoc: "कागदपत्र अपलोड करा",
+      docName: "कागदपत्राचे नाव",
+      category: "श्रेणी",
+      expiry: "समाप्ती"
+    },
+    grievances: {
+      title: "विनंत्या आणि तक्रारी",
+      subtitle: "एचआर विनंत्या सबमिट करा किंवा कामाच्या ठिकाणच्या तक्रारी नोंदवा.",
+      newRequest: "नवीन विनंती",
+      dateFiled: "नोंदवल्याची तारीख",
+      noRequests: "कोणतीही विनंती किंवा तक्रार नोंदवलेली नाही."
+    },
+    notifications: {
+      title: "सूचना",
+      subtitle: "तुमच्या कामाशी संबंधित अपडेट्स आणि अलर्ट.",
+      markAllRead: "सर्व वाचलेले म्हणून चिन्हांकित करा",
+      new: "नवीन",
+      noNotifications: "तुमच्यासाठी कोणतीही सूचना नाही."
+    },
+    history: {
+      title: "माझा इतिहास",
+      subtitle: "तुमच्या अलीकडील क्रियाकलाप आणि सिस्टम इव्हेंटची टाइमलाइन.",
+      noActivity: "अद्याप कोणताही क्रियाकलाप नोंदवला गेला नाही."
+    },
+    attendance: {
+      subtitle: "अपने उपस्थिति रिकॉर्ड और चेक-इन स्थिति देखें।",
+      todayStatus: "आज की स्थिति",
+      checkedInAt: "चेक-इन का समय:",
+      checkOut: "चेक आउट",
+      notCheckedIn: "चेक इन नहीं किया",
+      readyToStart: "क्या आप अपनी शिफ्ट शुरू करने के लिए तैयार हैं?",
+      checkInNow: "अभी चेक इन करें",
+      attendanceRate: "उपस्थिति दर",
+      recentRecords: "हाल के रिकॉर्ड",
+      date: "दिनांक",
+      status: "स्थिति",
+      absent: "अनुपस्थित"
+    },
+    attendance: {
+      subtitle: "तुमचे उपस्थिती रेकॉर्ड आणि चेक-इन स्थिती पहा.",
+      todayStatus: "आजची स्थिती",
+      checkedInAt: "चेक-इन वेळ:",
+      checkOut: "चेक आउट",
+      notCheckedIn: "चेक इन केलेले नाही",
+      readyToStart: "तुम्ही तुमची शिफ्ट सुरू करण्यास तयार आहात का?",
+      checkInNow: "आता चेक इन करा",
+      attendanceRate: "उपस्थिती दर",
+      recentRecords: "अलीकडील रेकॉर्ड",
+      date: "तारीख",
+      status: "स्थिती",
+      absent: "अनुपस्थित"
+    },
     mock: {
       morningShift: "सकाळची शिफ्ट",
       safetyRefresher: "सुरक्षा रिफ्रेशर",
@@ -642,7 +902,7 @@ export const translations = {
       settings: "ترتیبات"
     },
     dashboard: {
-      greeting: "صبح بخیر، {name}",
+      greeting: "خوش آمدید، {name}",
       currentShift: "موجودہ شفٹ",
       myDay: "میرا دن",
       priorities: "ترجیحی کام",

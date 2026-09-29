@@ -113,6 +113,63 @@ const WorkforceOverview = () => {
         </div>
       </div>
 
+      {/* Individual Personnel Attendance Tracking */}
+      <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <UserCheck className="w-4 h-4 text-emerald-600" />
+            Individual Personnel Tracking
+          </h2>
+          <span className="text-xs font-semibold text-slate-500">Live Roster</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                <th className="p-3 rounded-tl-xl font-bold">Employee Name</th>
+                <th className="p-3 font-bold">Role</th>
+                <th className="p-3 font-bold">Today's Status</th>
+                <th className="p-3 rounded-tr-xl font-bold">Attendance (YTD)</th>
+              </tr>
+            </thead>
+            <tbody className="text-xs">
+              {workforceData.personnel?.map((person, idx) => (
+                <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                  <td className="p-3 font-bold text-slate-900 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-[#0f4c81] text-white flex items-center justify-center text-[9px] shrink-0">
+                      {person.name.charAt(0)}
+                    </div>
+                    {person.name}
+                  </td>
+                  <td className="p-3 font-medium text-slate-600">{person.role}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                      person.status === 'Present' ? 'bg-emerald-100 text-emerald-800' :
+                      person.status === 'Absent' ? 'bg-red-100 text-red-800' :
+                      'bg-amber-100 text-amber-800'
+                    }`}>
+                      {person.status}
+                    </span>
+                  </td>
+                  <td className="p-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-700">{person.attendance}%</span>
+                      <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${person.attendance >= 90 ? 'bg-emerald-500' : person.attendance >= 80 ? 'bg-amber-500' : 'bg-red-500'}`} 
+                          style={{ width: `${person.attendance}%` }}
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   );
 };
